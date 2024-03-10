@@ -2,16 +2,18 @@
 import express from "express";
 import mongoose from 'mongoose'
 import router from "./routes/user-routes";
+import blogRouter from "./routes/blog-routes";
 
 const app = express();
 // server data
 const password = encodeURIComponent("Puy@54713");
-const port = 3001
+const port = 3001;
 
 // parse all data into json format
-app.use(express.json())
+app.use(express.json());
 // routers
-app.use("/users", router)
+app.use("/users", router);
+app.use('/blogs', blogRouter);
 
 // connections
 // db connection

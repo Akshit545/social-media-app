@@ -10,13 +10,12 @@ const getAllUsers = async (req, res, next) => {
   try {
     users = await User.find();
   } catch (error) {
-    console.log(error);
+    // return error when error getting user data
+    return res.status(500).json({ message: "Error while fetching users data" });
   }
 
-  // return error when error getting user data or no users are found
+  // return error when no users are found
   if (!users) {
-    return res.status(404).json({ message: "Error while fetching users data" });
-  } else if(users.length === 0) {
     console.log("No users in db");
     return res.status(404).json({ message: "No user found" });
   }
@@ -34,10 +33,10 @@ const addUser = async (req, res, next) => {
     const alreadyExistingUser = await checkExistingUser({email});
   
     if (alreadyExistingUser) {
-      return res.status(404).json({message:"Email is already taken."});
+      return res.status(403).json({message:"Email is already taken."});
     }
   } catch (error) {
-    return res.status(404).json({ message: "Error while connecting to database"});
+    return res.status(500).json({ message: "Error while connecting to database"});
   }
 
   // encrypt the password 
@@ -50,7 +49,7 @@ const addUser = async (req, res, next) => {
   try {
     await newUser.save();
   } catch (error) {
-    return res.status(404).json({ message: "Error while creating new user"});
+    return res.status(500).json({ message: "Error while creating new user"});
   }
 
   // return success response if no errors
@@ -75,7 +74,7 @@ const loginUser = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(404).json({ message: "Error while connecting to database"});
+    return res.status(500).json({ message: "Error while connecting to database"});
   }
 
   return res.status(200).json({ message: "Login successful!!"})
