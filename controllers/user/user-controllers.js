@@ -1,6 +1,6 @@
 import User from "../../models/User";
 import bcrypt from "bcryptjs";
-import { checkExistingUser, checkExistingUserDataValidOrNot, getExisitingUserData } from "./user-service";
+import { checkExistingUser, checkExistingUserDataValidOrNot, getExisitingUserDataByEmail } from "./user-service";
 
 // get all users data
 const getAllUsers = async (req, res, next) => {
@@ -43,7 +43,7 @@ const addUser = async (req, res, next) => {
   const encryptedPass = bcrypt.hashSync(password);
 
   // make new user document
-  const newUser = new User({name, password: encryptedPass, email});
+  const newUser = new User({name, password: encryptedPass, email, blogs: []});
 
   // save user
   try {
@@ -62,7 +62,7 @@ const loginUser = async (req, res, next) => {
 
   // check if user exists or not
   try {
-    const alreadyExistingUser = await getExisitingUserData({email});
+    const alreadyExistingUser = await getExisitingUserDataByEmail({email});
 
     if (!alreadyExistingUser) {
       return res.status(404).json({message:"No User found"});

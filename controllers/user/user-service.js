@@ -1,13 +1,23 @@
 import User from "../../models/User";
 import bcrypt from "bcryptjs";
 
-// get user data from db
-const getExisitingUserData = async ({email}) => {
+// get user data from db by email
+const getExisitingUserDataByEmail = async ({email}) => {
   try {
     const alreadyExistingUser = await User.findOne({email});
 
-    if (alreadyExistingUser)
-      return alreadyExistingUser;
+    return alreadyExistingUser;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+// get user data from db by id
+const getExisitingUserDataById = async ({id}) => {
+  try {
+    const alreadyExistingUser = await User.findById(id);
+
+    return alreadyExistingUser;
   } catch (error) {
     throw new Error(error);
   }
@@ -16,7 +26,7 @@ const getExisitingUserData = async ({email}) => {
 //check for existng user
 const checkExistingUser = async ({email}) => {
   try {
-    const alreadyExistingUser = await getExisitingUserData({email});
+    const alreadyExistingUser = await getExisitingUserDataByEmail({email});
 
     if (alreadyExistingUser)
       return true;
@@ -39,6 +49,7 @@ const checkExistingUserDataValidOrNot = ({password, alreadyExistingUser: userDat
 
 export {
   checkExistingUser,
-  getExisitingUserData,
+  getExisitingUserDataByEmail,
   checkExistingUserDataValidOrNot,
+  getExisitingUserDataById,
 }
