@@ -1,4 +1,5 @@
 import Blog from "../../models/Blog";
+import User from "../../models/User";
 import { getExisitingUserDataById } from "../user/user-service";
 import { getExisitingBlogData } from './blog-service'
 import mongoose from 'mongoose'
@@ -137,10 +138,30 @@ const deleteBlogById = async (req, res, next) => {
   return res.status(200).json({ message: "Blog deleted successfully", blog })
 }
 
+// get all blogs for particular user
+const getBlogsByUserId = async (req, res, next) => {
+  const userId = req.params.id;
+
+  let userBlogs;
+  try {
+    userBlogs = await User.findById(userId).populate('blogs');
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({message:"Error connecting to DB while fetching"});
+  }
+
+  if (!userBlogs) {
+    return res.status(404).json({message:"No blog exists"});
+  }
+
+  return res.status(200).json({ message: "Blogs fetched successfully", blogs: userBlogs.blogs })
+}
+
 export{
   getAllBlogs,
   addBlog,
   updateBlogData,
   getBlogById,
   deleteBlogById,
+  getBlogsByUserId,
 }
